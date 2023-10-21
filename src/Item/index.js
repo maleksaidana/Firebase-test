@@ -10,21 +10,28 @@ function Item() {
 
     useEffect(() => {
 
-        projectFirestore.collection('recipes').doc(id).get()
-            .then((doc) => {
-                if (doc.exists) {
-                    console.log("Single Item", doc.data());
-                    setData({ id: doc.id, ...doc.data() });
+        const unsub = projectFirestore.collection('recipes').doc(id).onSnapshot((doc) => {
+            if (doc.exists) {
+                console.log("Single Item", doc.data());
+                setData({ id: doc.id, ...doc.data() });
 
-                }
-            })
-            .catch(err => {
-                console.log("single item", err);
-            });        
+            }
+
+        }, (err) => {
+            console.log("ERROR ON Real time fetch", err)
+        })
+
+        return() => unsub()
+
 
     }, [id])
 
+    const handleUpdate = () => {
+        projectFirestore.collection('recipes').doc(id).update({
+            title: 'new title ' + (Math.floor(Math.random() * 90000) + 10000)
 
+        })
+    }
 
 
     return (
@@ -40,6 +47,8 @@ function Item() {
                     })
                 }
             </ul>
+            <button onClick={handleUpdate}> update </button>
+
         </div>
 
     );
