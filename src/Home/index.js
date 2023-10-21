@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { projectFirestore } from '../firebase/config';
+import { Link } from 'react-router-dom';
+
 import './style.css';
 
 function Home() {
@@ -63,7 +65,7 @@ function Home() {
 
     }
 
-    const getItem = () => {
+    /*const getItem = () => {
         projectFirestore.collection('recipes').doc("0Mm6ArfhtoQgYPQ1BQnv").get()
             .then((doc) => {
                 if (doc.exists) {
@@ -74,7 +76,7 @@ function Home() {
             .catch(err => {
                 console.log("single item", err);
             });
-    }
+    }*/
 
     const deleteItem = async (id) => {
         try {
@@ -111,7 +113,7 @@ function Home() {
                         <h2>{item.title}</h2>
                         <p>{item.method}</p>
                         <p>{item.cookingTime}</p>
-                        <button onClick={getItem}> Details </button>
+                        <Link to={`/item/${item.id}`}>Details</Link>
                         <button onClick={() => deleteItem(item.id)}> Delete </button>
                     </div>
                 );
