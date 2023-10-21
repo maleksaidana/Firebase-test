@@ -22,7 +22,7 @@ function Home() {
 
     }, [])
 
-    const getItems = () => {
+    /*const getItems = () => {
         projectFirestore.collection('recipes').get()
             .then((snapshot) => {
                 if (snapshot.empty) {
@@ -41,7 +41,7 @@ function Home() {
             .catch(err => {
                 console.log(err);
             });
-    }
+    }*/
 
     const getItemsRealTime = () => {
         return projectFirestore.collection('recipes').onSnapshot((snapshot) => {
