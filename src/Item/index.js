@@ -10,11 +10,6 @@ function Item() {
 
     useEffect(() => {
 
-        getItem();
-
-    }, [])
-
-    const getItem = () => {
         projectFirestore.collection('recipes').doc(id).get()
             .then((doc) => {
                 if (doc.exists) {
@@ -25,8 +20,11 @@ function Item() {
             })
             .catch(err => {
                 console.log("single item", err);
-            });
-    }
+            });        
+
+    }, [id])
+
+
 
 
     return (
