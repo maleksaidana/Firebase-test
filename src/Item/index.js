@@ -35,12 +35,12 @@ function Item() {
 
 
     return (
-        <div class="item">
+        <div className="item">
             <h3>{data?.title}</h3>
             <p>{data?.cookingTime}</p>
             <p>{data?.method}</p>
             <p>Ingredients: </p>
-            <ul class="ingredients">
+            <ul className="ingredients">
                 {
                     data?.ingredients.length > 0 && data.ingredients.map((item, i) => {
                         return <li key={i}> {item} </li>

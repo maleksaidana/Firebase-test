@@ -18,9 +18,8 @@ function Home() {
 
     useEffect(() => {
 
-        getItemsRealTime();
-
-        return() => getItemsRealTime()
+        const unsub = getItemsRealTime();
+        return() => unsub()
 
     }, [])
 
