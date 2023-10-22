@@ -1,21 +1,24 @@
 import Home from "./Home";
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import Item from "./Item";
 import Header from "./Header";
 import Signup from "./Signup";
 import Login from "./Login";
+import { useAuthContext } from "./hooks/useAuthContext";
 
 function App() {
+  const { authIsReady, user } = useAuthContext();
   return (
     <>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/item/:id" element={<Item />} />
-        <Route path="/about" element={<h1> About </h1>} />
-        <Route path="/signup" element={<Signup/>} />
-        <Route path="/login" element={<Login/>} />
-      </Routes>
+      {authIsReady && (
+        <><Header />
+        <Routes>
+          <Route path="/" element={user ? <Home /> : <Navigate to="/login" replace />} />
+          <Route path="/item/:id" element={user ? <Item /> : <Navigate to="/login" replace />} />
+          <Route path="/about" element={user ? <h1> About </h1> : <Navigate to="/login" replace />} />
+          <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" replace />} />
+          <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace />} />
+        </Routes></>)}
     </>
 
   );
