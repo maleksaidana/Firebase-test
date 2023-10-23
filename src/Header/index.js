@@ -12,6 +12,7 @@ function App() {
       <li> hello {user.displayName}</li>
         <li> <Link to={`/`}>Home</Link></li>
         <li> <Link to={`/about`}>About</Link></li>
+        <li> <Link to={`/games`}>Games</Link></li>
         <li> <p onClick={logout}> Logout </p></li>
       </>}
 

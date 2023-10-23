@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { projectFirestore } from '../firebase/config';
 import { Link } from 'react-router-dom';
+import { useFirestore } from '../hooks/useFirestore';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 import './style.css';
+import { useCollection } from '../hooks/useCollection';
 
 function Home() {
 
-    const [data, setData] = useState(null);
+    //const [data, setData] = useState(null);
 
     //Form
     const [title, setTitle] = useState("");
@@ -14,14 +17,16 @@ function Home() {
     const [cookingTime, setCookingTime] = useState("");
     const [ingredient, setIngredient] = useState("");
     const [ingredients, setIngredients] = useState([]);
+    const { addDocument, response } = useFirestore("recipes");
+    const { documents, error } = useCollection("recipes");
+    const { user } = useAuthContext();
 
-
-    useEffect(() => {
+    /*useEffect(() => {
 
         const unsub = getItemsRealTime();
         return() => unsub()
 
-    }, [])
+    }, [])*/
 
     /*const getItems = () => {
         projectFirestore.collection('recipes').get()
@@ -44,7 +49,7 @@ function Home() {
             });
     }*/
 
-    const getItemsRealTime = () => {
+    /*const getItemsRealTime = () => {
         return projectFirestore.collection('recipes').onSnapshot((snapshot) => {
                 if (snapshot.empty) {
                     setData("EMPTY");
@@ -62,7 +67,7 @@ function Home() {
                 console.log("ERROR ON Real time fetch", err)
             })
 
-    }
+    }*/
 
     /*const getItem = () => {
         projectFirestore.collection('recipes').doc("0Mm6ArfhtoQgYPQ1BQnv").get()
@@ -87,7 +92,7 @@ function Home() {
         }
     }
 
-    const handleSubmit = async (e) => {
+    /*const handleSubmit = async (e) => {
         e.preventDefault();
         const doc = { title, ingredients, method, cookingTime };
         setTitle("");
@@ -102,11 +107,28 @@ function Home() {
         catch (e) {
             console.log("ERROR", e);
         }
+    }*/
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const doc = { title, ingredients, method, cookingTime };
+        addDocument({...doc, uid: user.uid})
     }
+
+    useEffect(() => {
+        if(response.success){
+            setTitle("");
+            setMethod("");
+            setCookingTime("");
+            setIngredient("");
+            setIngredients([]);
+        }
+    }, [response])
 
     return (
         <div className="container">
-            {data && data.map((item, i) => {
+            {error && <p>{error}</p>}
+            {documents && documents.map((item, i) => {
                 return (
                     <div className="card" key={i}>
                         <h2>{item.title}</h2>
