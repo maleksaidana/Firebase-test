@@ -3,7 +3,7 @@ import { projectFirestore } from '../firebase/config';
 import { Link } from 'react-router-dom';
 import { useFirestore } from '../hooks/useFirestore';
 import { useAuthContext } from '../hooks/useAuthContext';
-
+import {doc, deleteDoc } from "firebase/firestore";
 import './style.css';
 import { useCollection } from '../hooks/useCollection';
 
@@ -84,7 +84,8 @@ function Home() {
 
     const deleteItem = async (id) => {
         try {
-            await projectFirestore.collection('recipes').doc(id).delete();
+            const ref = doc(projectFirestore, 'recipes', id);
+            await deleteDoc(ref);
 
         }
         catch (e) {

@@ -2,6 +2,8 @@ import './style.css';
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { projectFirestore } from '../firebase/config';
+import { doc, onSnapshot  } from 'firebase/firestore'
+
 
 function Item() {
 
@@ -10,7 +12,9 @@ function Item() {
 
     useEffect(() => {
 
-        const unsub = projectFirestore.collection('recipes').doc(id).onSnapshot((doc) => {
+        const ref = doc(projectFirestore, 'recipes', id)
+
+        const unsub = onSnapshot(ref, (doc) => {
             if (doc.exists) {
                 console.log("Single Item", doc.data());
                 setData({ id: doc.id, ...doc.data() });
@@ -39,6 +43,7 @@ function Item() {
             <h3>{data?.title}</h3>
             <p>{data?.cookingTime}</p>
             <p>{data?.method}</p>
+            <p>{data?.createdAt.toDate().toDateString()}</p>
             <p>Ingredients: </p>
             <ul className="ingredients">
                 {

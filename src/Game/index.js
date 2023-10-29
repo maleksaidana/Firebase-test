@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { projectFirestore, projectStorage} from '../firebase/config';
+import { projectFirestore, projectStorage } from '../firebase/config';
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { doc, deleteDoc, collection, addDoc } from 'firebase/firestore';
 import { useFirestore } from '../hooks/useFirestore';
 import { useAuthContext } from '../hooks/useAuthContext';
 
@@ -14,12 +16,13 @@ function Game() {
     const { addDocument, response } = useFirestore("games");
     const { user } = useAuthContext();
 
-    const { documents, error } = useCollection("games", ["uid","==", user.uid], ["createdAt", "desc"]);
+    const { documents, error } = useCollection("games", ["uid", "==", user.uid], ["createdAt", "desc"]);
 
 
     const deleteItem = async (id) => {
         try {
-            await projectFirestore.collection('games').doc(id).delete();
+            const ref = doc(projectFirestore, 'games', id)
+            await deleteDoc(ref);
 
         }
         catch (e) {
@@ -33,35 +36,45 @@ function Game() {
 
         //upload user image
         const uploadPath = `thumbnails/${user.uid}/${thumbnail.name}`;
-        const img = await projectStorage.ref(uploadPath).put(thumbnail);
-        const imgUrl = await img.ref.getDownloadURL();
+        const imageRef  = await ref(projectStorage, uploadPath);
 
+        uploadBytes(imageRef, thumbnail)
+            .then((snapshot) => {
+                getDownloadURL(snapshot.ref)
+                    .then((imgUrl) => {
+                        const doc = { name, age, imgUrl };
+                        addDocument({ ...doc, uid: user.uid })
+                    })
+                    .catch((error) => {
+                    });
+            })
+            .catch((error) => {
+            });
 
         e.preventDefault();
-        const doc = { name, age, imgUrl };
-        addDocument({...doc, uid: user.uid})
+
     }
 
     useEffect(() => {
-        if(response.success){
+        if (response.success) {
             setName("");
             setAge("");
         }
     }, [response])
 
-    const handleFileChange = (e) =>{
+    const handleFileChange = (e) => {
         setThumbnail(null);
         let selected = e.target.files[0];
-        if(!selected){
+        if (!selected) {
             console.log("NOT SELECTED");
             return
         }
-        if(!selected.type.includes('image')){
+        if (!selected.type.includes('image')) {
             console.log("seleceted file must be image");
             return
 
         }
-        if(selected.size > 1000000){
+        if (selected.size > 1000000) {
             console.log("file too big ");
             return
 
@@ -87,7 +100,7 @@ function Game() {
             <div className="form">
                 <input value={name} onChange={e => setName(e.target.value)} placeholder='NAME' />
                 <input value={age} onChange={e => setAge(e.target.value)} placeholder='AGE' />
-                <input type="file" onChange={handleFileChange}/>
+                <input type="file" onChange={handleFileChange} />
                 <button onClick={handleSubmit}> Submit </button>
             </div>
         </div>

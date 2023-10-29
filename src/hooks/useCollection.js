@@ -1,27 +1,29 @@
 
 import { projectFirestore } from "../firebase/config";
+import {collection, getDocs, query, onSnapshot, where, orderBy } from 'firebase/firestore';
 import { useEffect, useRef, useState } from "react";
 
-export const useCollection = (collection, _query, _orderBy) => {
+export const useCollection = (coll, _query, _orderBy) => {
     const [documents, setDocuments] = useState(null);
     const [error, setError] = useState(null);
     
-    const query = useRef(_query).current;
-    const orderBy = useRef(_orderBy).current;
+    const q = useRef(_query).current;
+    const order = useRef(_orderBy).current;
 
     useEffect(() => {
 
-        let ref = projectFirestore.collection(collection);
+        let ref = collection(projectFirestore, coll);
 
-        if(query){
-            ref = ref.where(...query)
+        if(q){
+            ref = query(ref, where(...q))
         }
 
-        if(orderBy){
-            ref = ref.orderBy(...orderBy)
+        if(order){
+            ref = query(ref, orderBy(...order))
+
         }
 
-        const unsubscribe = ref.onSnapshot((snapshot)=>{
+        const unsubscribe = onSnapshot(ref, (snapshot)=>{
             let results = [];
             snapshot.docs.forEach(doc => {
                 results.push({...doc.data(), id: doc.id});
@@ -34,7 +36,7 @@ export const useCollection = (collection, _query, _orderBy) => {
         })
 
         return () => unsubscribe();
-    }, [collection, query, orderBy])
+    }, [coll, query, order])
 
     return { documents, error }
 
