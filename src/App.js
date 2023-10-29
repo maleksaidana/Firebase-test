@@ -6,9 +6,12 @@ import Signup from "./Signup";
 import Login from "./Login";
 import { useAuthContext } from "./hooks/useAuthContext";
 import Game from "./Game";
+import People from "./People";
 
 function App() {
   const { authIsReady, user } = useAuthContext();
+
+
   return (
     <>
       {authIsReady && (
@@ -18,6 +21,7 @@ function App() {
           <Route path="/games" element={user ? <Game /> : <Navigate to="/login" replace />} />
           <Route path="/item/:id" element={user ? <Item /> : <Navigate to="/login" replace />} />
           <Route path="/about" element={user ? <h1> About </h1> : <Navigate to="/login" replace />} />
+          <Route path="/people" element={user ? <People  /> : <Navigate to="/login" replace />} />
           <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" replace />} />
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace />} />
         </Routes></>)}
