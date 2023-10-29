@@ -1,6 +1,6 @@
 
 import { projectFirestore } from "../firebase/config";
-import {collection, getDocs, query, onSnapshot, where, orderBy } from 'firebase/firestore';
+import {collection, query, onSnapshot, where, orderBy } from 'firebase/firestore';
 import { useEffect, useRef, useState } from "react";
 
 export const useCollection = (coll, _query, _orderBy) => {
@@ -36,7 +36,7 @@ export const useCollection = (coll, _query, _orderBy) => {
         })
 
         return () => unsubscribe();
-    }, [coll, query, order])
+    }, [coll, q, order])
 
     return { documents, error }
 

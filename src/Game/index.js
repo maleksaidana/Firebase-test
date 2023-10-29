@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { projectFirestore, projectStorage } from '../firebase/config';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { doc, deleteDoc, collection, addDoc } from 'firebase/firestore';
+import { doc, deleteDoc } from 'firebase/firestore';
 import { useFirestore } from '../hooks/useFirestore';
 import { useAuthContext } from '../hooks/useAuthContext';
 
