@@ -1,14 +1,5 @@
 import React from 'react';
 import { useCountdown } from '../hooks/useCountdown';
-import { useCollection } from '../hooks/useCollection';
-import { useEffect, useState } from 'react';
-import { projectFirestore, projectStorage } from '../firebase/config';
-import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { doc, deleteDoc } from 'firebase/firestore';
-import { useFirestore } from '../hooks/useFirestore';
-import { useAuthContext } from '../hooks/useAuthContext';
-
-
 
 const Person = ({item}) => {
 
@@ -24,6 +15,7 @@ const Person = ({item}) => {
             <p>{item?.createdAt.toDate().toLocaleString()}</p>
             <p> EXPIRES IN: {minutes}:{seconds} </p>
             <img alt="not Found" width={100} height={100} src={item.imgUrl} />
+            <p  hidden> {days + hours}</p>
 
         </div>
 

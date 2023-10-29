@@ -34,10 +34,10 @@ const getReturnValues = (countDown) => {
     minutes = 0;
     seconds = 0;
   }
-  if(minutes.toString().length == "1"){
+  if(minutes.toString().length === "1"){
     minutes = "0"+ minutes;
   }
-  if(seconds.toString().length == "1"){
+  if(seconds.toString().length === "1"){
     seconds = "0"+ seconds;
   }
 

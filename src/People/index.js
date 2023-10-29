@@ -1,10 +1,8 @@
 import React from 'react';
-import { useCountdown } from '../hooks/useCountdown';
 import { useCollection } from '../hooks/useCollection';
 import { useEffect, useState } from 'react';
-import { projectFirestore, projectStorage } from '../firebase/config';
+import {  projectStorage } from '../firebase/config';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { doc, deleteDoc } from 'firebase/firestore';
 import { useFirestore } from '../hooks/useFirestore';
 import { useAuthContext } from '../hooks/useAuthContext';
 import Person from '../Person';
@@ -13,7 +11,6 @@ import Person from '../Person';
 
 const People = () => {
 
-    const [days, hours, minutes, seconds] = useCountdown(new Date(new Date().getTime() + (1000 * 60 * 30)));
 
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
@@ -21,17 +18,6 @@ const People = () => {
     const { addDocument, response } = useFirestore("games");
     const { user } = useAuthContext();
     const { documents, error } = useCollection("games", ["uid", "==", user.uid], ["createdAt", "desc"]);
-
-    const deleteItem = async (id) => {
-        try {
-            const ref = doc(projectFirestore, 'games', id)
-            await deleteDoc(ref);
-
-        }
-        catch (e) {
-            console.log("ERROR", e);
-        }
-    }
 
 
 
