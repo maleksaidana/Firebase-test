@@ -6,6 +6,7 @@ import { useFirestore } from '../hooks/useFirestore';
 import { useAuthContext } from '../hooks/useAuthContext';
 
 import { useCollection } from '../hooks/useCollection';
+import './style.scss';
 
 function Game() {
 

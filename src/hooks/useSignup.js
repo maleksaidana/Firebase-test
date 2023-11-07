@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {projectAuth} from '../firebase/config';
-import {createUserWithEmailAndPassword} from 'firebase/auth';
+import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
 import { useAuthContext } from './useAuthContext';
 
 export const useSignup = () => {
@@ -21,7 +21,7 @@ export const useSignup = () => {
                 throw new error("Could not complete signup");
             }
 
-            await res.user.updateProfile({ displayName });
+            await updateProfile(res.user, { displayName });
 
             //Dispath login Function
             dispatch({type: 'LOGIN', payload: res.user})
