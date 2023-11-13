@@ -2,33 +2,15 @@ import './style.css';
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { projectFirestore } from '../firebase/config';
-import { doc, onSnapshot  } from 'firebase/firestore'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { useDocument } from '../hooks/useDocument';
 
 
 function Item() {
 
-    const [data, setData] = useState(null);
+
     const { id } = useParams();
-
-    useEffect(() => {
-
-        const ref = doc(projectFirestore, 'recipes', id)
-
-        const unsub = onSnapshot(ref, (doc) => {
-            if (doc.exists) {
-                console.log("Single Item", doc.data());
-                setData({ id: doc.id, ...doc.data() });
-
-            }
-
-        }, (err) => {
-            console.log("ERROR ON Real time fetch", err)
-        })
-
-        return() => unsub()
-
-
-    }, [id])
+    const { document, error } = useDocument("recipes", id);
 
     const handleUpdate = () => {
         projectFirestore.collection('recipes').doc(id).update({
@@ -40,20 +22,30 @@ function Item() {
 
     return (
         <div className="item">
-            <h3>{data?.title}</h3>
-            <p>{data?.cookingTime}</p>
-            <p>{data?.method}</p>
-            <p>{data?.createdAt.toDate().toDateString()}</p>
+            <h3>{document?.title}</h3>
+            <p>{document?.cookingTime}</p>
+            <p>{document?.method}</p>
+            <p>{document?.createdAt.toDate().toDateString()}</p>
             <p>Ingredients: </p>
             <ul className="ingredients">
                 {
-                    data?.ingredients.length > 0 && data.ingredients.map((item, i) => {
+                    document?.ingredients.length > 0 && document.ingredients.map((item, i) => {
                         return <li key={i}> {item} </li>
                     })
                 }
             </ul>
             <button onClick={handleUpdate}> update </button>
 
+            <select name="languages" id="language-select" onFocus={(e)=>{e.target.size =12}}
+                onChange={(e)=> {e.target.blur() ;e.target.size=1}}>
+                <option value="">--Choose an option--</option>
+                <option value="javascript">JavaScript</option>
+                <option value="typescript">TypeScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="php">PHP</option>
+                <option value="php">PHP</option>
+            </select>
         </div>
 
     );

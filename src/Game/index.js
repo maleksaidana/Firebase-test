@@ -7,6 +7,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 
 import { useCollection } from '../hooks/useCollection';
 import './style.scss';
+import {where, orderBy,limit } from 'firebase/firestore';
 
 function Game() {
 
@@ -17,7 +18,7 @@ function Game() {
     const { addDocument, response } = useFirestore("games");
     const { user } = useAuthContext();
 
-    const { documents, error } = useCollection("games", ["uid", "==", user.uid], ["createdAt", "desc"]);
+    const { documents, error } = useCollection("games", where('uid', "==", user.uid), orderBy("createdAt", "desc"));
 
 
     const deleteItem = async (id) => {

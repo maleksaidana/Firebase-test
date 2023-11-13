@@ -1,0 +1,19 @@
+option:checked,
+option:hover {
+    box-shadow: 0 0 10px 100px #4ddc3b inset;
+    border: 0px;
+    outline: 0px;
+}
+
+select{
+    padding: 15px;
+    border: 0px;
+    outline: 0px;
+    overflow: hidden;
+
+}
+
+option{
+    padding: 15px;
+
+}

@@ -1,25 +1,31 @@
 
 import { projectFirestore } from "../firebase/config";
-import {collection, query, onSnapshot, where, orderBy } from 'firebase/firestore';
+import {collection, query, onSnapshot } from 'firebase/firestore';
 import { useEffect, useRef, useState } from "react";
 
-export const useCollection = (coll, _query, _orderBy) => {
+export const useCollection = (coll, _query, _orderBy, _limit) => {
     const [documents, setDocuments] = useState(null);
     const [error, setError] = useState(null);
     
     const q = useRef(_query).current;
     const order = useRef(_orderBy).current;
+    const limit = useRef(_limit).current;
 
     useEffect(() => {
 
         let ref = collection(projectFirestore, coll);
 
         if(q){
-            ref = query(ref, where(...q))
+            ref = query(ref, q)
         }
 
         if(order){
-            ref = query(ref, orderBy(...order))
+            ref = query(ref, order)
+
+        }
+
+        if(limit){
+            ref = query(ref, limit)
 
         }
 
@@ -32,11 +38,11 @@ export const useCollection = (coll, _query, _orderBy) => {
             setError(null);
         }, (error) =>{
             setError("could not fetch");
-            console.log(error)
+            console.log("ASBA",error)
         })
 
         return () => unsubscribe();
-    }, [coll, q, order])
+    }, [coll, q, order, limit])
 
     return { documents, error }
 
