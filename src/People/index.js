@@ -1,11 +1,12 @@
 import React from 'react';
 import { useCollection } from '../hooks/useCollection';
 import { useEffect, useState } from 'react';
-import {  projectStorage } from '../firebase/config';
+import { projectStorage } from '../firebase/config';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { useFirestore } from '../hooks/useFirestore';
 import { useAuthContext } from '../hooks/useAuthContext';
 import Person from '../Person';
+import getImageFile from '../utils/getImageFile';
 
 
 
@@ -24,10 +25,35 @@ const People = () => {
     const handleSubmit = async (e) => {
 
         //upload user image
-        const uploadPath = `thumbnails/${user.uid}/${thumbnail.name}`;
+        const uploadPath = `thumbnails/${user.uid}/${thumbnail?.name}`;
         const imageRef = await ref(projectStorage, uploadPath);
 
         uploadBytes(imageRef, thumbnail)
+            .then((snapshot) => {
+                getDownloadURL(snapshot.ref)
+                    .then((imgUrl) => {
+                        const doc = { name, age, imgUrl };
+                        addDocument({ ...doc, uid: user.uid })
+                    })
+                    .catch((error) => {
+                    });
+            })
+            .catch((error) => {
+            });
+
+        e.preventDefault();
+
+    }
+
+    const handleSubmit2 = async (e) => {
+
+        const profileImage = await getImageFile('/fortnite.png', 'profile.jpeg');
+
+        //upload user image
+        const uploadPath = `images/${user.uid}/${profileImage?.name}`;
+        const imageRef = await ref(projectStorage, uploadPath);
+
+        uploadBytes(imageRef, profileImage)
             .then((snapshot) => {
                 getDownloadURL(snapshot.ref)
                     .then((imgUrl) => {
@@ -63,11 +89,7 @@ const People = () => {
             return
 
         }
-        if (selected.size > 1000000) {
-            console.log("file too big ");
-            return
 
-        }
         setThumbnail(selected);
 
     }
@@ -85,7 +107,7 @@ const People = () => {
                 <input value={name} onChange={e => setName(e.target.value)} placeholder='NAME' />
                 <input value={age} onChange={e => setAge(e.target.value)} placeholder='AGE' />
                 <input type="file" onChange={handleFileChange} />
-                <button onClick={handleSubmit}> Submit </button>
+                <button onClick={handleSubmit2}> Submit </button>
             </div>
         </div>
     );

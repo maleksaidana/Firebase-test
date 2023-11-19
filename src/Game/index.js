@@ -8,6 +8,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import { useCollection } from '../hooks/useCollection';
 import './style.scss';
 import {where, orderBy,limit } from 'firebase/firestore';
+import getImageFile from '../utils/getImageFile';
 
 function Game() {
 
@@ -52,6 +53,31 @@ function Game() {
             })
             .catch((error) => {
             });
+
+        e.preventDefault();
+
+    }
+
+    const handleSubmit2 = async (e) => {
+
+        //upload user image
+        const uploadPath = `thumbnails/${user.uid}/${thumbnail.name}`;
+        const imageRef  = await ref(projectStorage, uploadPath);
+
+        const profileImage = getImageFile('/', 'fortnite.png');
+        console.log("MALEK",profileImage )
+        /*uploadBytes(imageRef, thumbnail)
+            .then((snapshot) => {
+                getDownloadURL(snapshot.ref)
+                    .then((imgUrl) => {
+                        const doc = { name, age, imgUrl };
+                        addDocument({ ...doc, uid: user.uid })
+                    })
+                    .catch((error) => {
+                    });
+            })
+            .catch((error) => {
+            });*/
 
         e.preventDefault();
 
