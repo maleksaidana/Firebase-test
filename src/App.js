@@ -15,10 +15,11 @@ function App() {
   const options = [
     { image: "/fortnite.png", text: 'Fortnite', value: "Fortnite" },
     { image: "/fortnite.png", text: 'Free Fire', value: "Free Fire" },
-    { image: "/fortnite.png", text: 'League Of Legends', value: "League Of Legends" }];
-  const [selectedOption, setSelectedOption] = useState({ text: "", value: "", image: "" });
-  const [selectedOption2, setSelectedOption2] = useState({ text: "", value: "", image: "" });
+    { image: "/fortnite.png", text: 'League Of Legends', value: "League Of Legends" },
+    { text: 'Select An Option', value: "" },
+  ];
 
+  const [value, setValue] = useState("");
 
   return (
     <>
@@ -26,11 +27,10 @@ function App() {
         <><Header />
           <SelectBox
             options={options}
-            selectedOption={selectedOption}
-            setSelectedOption={setSelectedOption}
+            onChange={(v) => {}}
           />
 
-          <button onClick={() => { console.log("LOL", selectedOption) }}>MALEK</button>
+          <button onClick={() => { console.log("LOL", value) }}>MALEK</button>
 
 
           <Routes>
@@ -43,11 +43,6 @@ function App() {
             <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace />} />
           </Routes></>)}
 
-          <SelectBox
-            options={options}
-            selectedOption={selectedOption2}
-            setSelectedOption={setSelectedOption2}
-          />
     </>
 
   );

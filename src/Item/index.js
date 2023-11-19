@@ -2,8 +2,9 @@ import './style.css';
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { projectFirestore } from '../firebase/config';
-import { doc, onSnapshot } from 'firebase/firestore'
+import { doc, onSnapshot, updateDoc,collection,arrayUnion } from 'firebase/firestore'
 import { useDocument } from '../hooks/useDocument';
+import { useFirestore } from '../hooks/useFirestore';
 
 
 function Item() {
@@ -11,12 +12,10 @@ function Item() {
 
     const { id } = useParams();
     const { document, error } = useDocument("recipes", id);
+    const { addDocument, updateDocument, response } = useFirestore("recipes");
 
-    const handleUpdate = () => {
-        projectFirestore.collection('recipes').doc(id).update({
-            title: 'new title ' + (Math.floor(Math.random() * 90000) + 10000)
-
-        })
+    const handleUpdate =async () => {
+        updateDocument(id, { title: 'new title ' + (Math.floor(Math.random() * 90000) + 10000), ingredients:  arrayUnion("greater_virnia") });
     }
 
 

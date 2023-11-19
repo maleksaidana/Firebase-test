@@ -3,20 +3,21 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 
-function SelectBox({options, selectedOption, setSelectedOption}) {
+function SelectBox({options, onChange}) {
 
     const [displayOptions, toggleOptions] = useState(false);
+    const [selectedOption, setSelectedOption] = useState({ text: "", value: "", image: "" });
 
     
 
     useEffect(() =>{
-        setSelectedOption(options[0]);
-        console.log("SELECT")
+        setSelectedOption(options.find(e => e.value == "") || options[0]);
     }, [])
 
     const optionSelected = (e) => {
         const selectedValue= e.target.getAttribute('dataset');
-        setSelectedOption(options.find(e => e.value == selectedValue))
+        setSelectedOption(options.find(e => e.value == selectedValue));
+        onChange(selectedValue);
     }
 
     return (

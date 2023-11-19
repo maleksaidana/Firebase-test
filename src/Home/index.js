@@ -17,7 +17,7 @@ function Home() {
     const [cookingTime, setCookingTime] = useState("");
     const [ingredient, setIngredient] = useState("");
     const [ingredients, setIngredients] = useState([]);
-    const { addDocument, response } = useFirestore("recipes");
+    const { addDocument, deleteDocument, response } = useFirestore("recipes");
     const { documents, error } = useCollection("recipes");
     const { user } = useAuthContext();
 
