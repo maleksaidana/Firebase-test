@@ -12,10 +12,10 @@ function Item() {
 
     const { id } = useParams();
     const { document, error } = useDocument("recipes", id);
-    const { addDocument, updateDocument, response } = useFirestore("recipes");
+    const { setDocument, response } = useFirestore("recipes");
 
     const handleUpdate =async () => {
-        updateDocument(id, { title: 'new title ' + (Math.floor(Math.random() * 90000) + 10000), ingredients:  arrayUnion("greater_virnia") });
+        setDocument(id, { title: 'new title ' + (Math.floor(Math.random() * 90000) + 10000), ingredients:  arrayUnion("greater_virnia") }, true);
     }
 
 
@@ -24,7 +24,7 @@ function Item() {
             <h3>{document?.title}</h3>
             <p>{document?.cookingTime}</p>
             <p>{document?.method}</p>
-            <p>{document?.createdAt.toDate().toDateString()}</p>
+            <p>{document?.createdAt?.toDate().toDateString()}</p>
             <p>Ingredients: </p>
             <ul className="ingredients">
                 {

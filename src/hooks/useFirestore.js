@@ -1,6 +1,6 @@
 import { projectFirestore, timestamp } from "../firebase/config";
 import { useEffect, useState, useReducer } from "react";
-import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
 
 
 let initialState = {
@@ -54,6 +54,24 @@ export const useFirestore = (coll) => {
         }
     }
 
+    //set a document
+    const setDocument = async (id, fields, merge = false) => {
+        dispatch({ type: 'IS_PENDING', document: null, success: false, error: null });
+        try {
+            const refdoc = doc(projectFirestore, coll, id);
+            console.log("MALEK", fields)
+            const doneDocuments = await setDoc(refdoc, fields, { merge });
+
+            console.log("SET DOCUMENT", doneDocuments);
+            dispatchIfNotCanceled({ type: "UPDATED_DOCUMENT", payload: doneDocuments })
+        }
+        catch (err) {
+            dispatchIfNotCanceled({ type: "ERROR", payload: err.message })
+            console.log("SDF", err)
+
+        }
+    }
+
 
     //delete a document
     const deleteDocument = async (id) => {
@@ -94,5 +112,5 @@ export const useFirestore = (coll) => {
         return () => setIsCanceled(true)
     }, [])
 
-    return { addDocument, updateDocument, deleteDocument, response }
+    return { addDocument, updateDocument, deleteDocument, setDocument, response }
 }
