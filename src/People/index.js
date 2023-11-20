@@ -45,26 +45,30 @@ const People = () => {
 
     }
 
+
+    const uploadImage = async (imageRef, image) => {
+        try {
+
+            const snapshot = await uploadBytes(imageRef, image);
+            const imgUrl = await getDownloadURL(snapshot.ref);
+            return imgUrl;
+
+        } catch (error) {
+            return null;
+        }
+    }
+
     const handleSubmit2 = async (e) => {
 
-        const profileImage = await getImageFile('/fortnite.png', 'profile.jpeg');
+        const profileImage = await getImageFile('/1.png', 'profile.jpeg');
 
         //upload user image
         const uploadPath = `images/${user.uid}/${profileImage?.name}`;
-        const imageRef = await ref(projectStorage, uploadPath);
+        const imageRef = ref(projectStorage, uploadPath);
+        const imgUrl = await uploadImage(imageRef, profileImage);
 
-        uploadBytes(imageRef, profileImage)
-            .then((snapshot) => {
-                getDownloadURL(snapshot.ref)
-                    .then((imgUrl) => {
-                        const doc = { name, age, imgUrl };
-                        addDocument({ ...doc, uid: user.uid })
-                    })
-                    .catch((error) => {
-                    });
-            })
-            .catch((error) => {
-            });
+        const doc = { name, age, imgUrl };
+        addDocument({ ...doc, uid: user.uid });
 
         e.preventDefault();
 
