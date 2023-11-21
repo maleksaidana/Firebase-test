@@ -8,30 +8,54 @@ import { useAuthContext } from "./hooks/useAuthContext";
 import Game from "./Game";
 import People from "./People";
 import SelectBox from "./SelectBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { httpsCallable } from 'firebase/functions';
+import { functions } from "./firebase/config";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import PaypalPayment from "./PaypalPayment";
+
 
 function App() {
   const { authIsReady, user } = useAuthContext();
-  const options = [
-    { image: "/fortnite.png", text: 'Fortnite', value: "Fortnite" },
-    { image: "/fortnite.png", text: 'Free Fire', value: "Free Fire" },
-    { image: "/fortnite.png", text: 'League Of Legends', value: "League Of Legends" },
-    { text: 'Select An Option', value: "" },
-  ];
 
-  const [value, setValue] = useState("");
+  const getHello = async () => {
+    const sayHello = httpsCallable(functions, 'sayHello');
+    const result = await sayHello();
+    console.log("RESPONSE", result);
+  }
+
+  const adminRole = async () => {
+    const email = user?.email;
+    const addAdminRole = httpsCallable(functions, 'addAdminRole');
+    const result = await addAdminRole({ email });
+    console.log("RESPONSE", result);
+  }
+
+  const getToken = async () => {
+
+    user.getIdTokenResult().then(idtokenResult => {
+      console.log("Claims", idtokenResult.claims)
+    })
+  }
+
+
+  const initialOptions = {
+    clientId: "AeXiCmyyn2l9kNmTtXl8qKhPiaaRCoBM4PgmROFS1rMq4FET6SgnJugobggKk-Dc-yTrahPiefc2kQ24",
+    currency: "USD",
+    intent: "capture",
+  };
+
 
   return (
     <>
       {authIsReady && (
         <><Header />
-          <SelectBox
-            options={options}
-            onChange={(v) => {}}
-          />
+          <button onClick={adminRole}>Set Admin</button>
+          <button onClick={getToken}>get Claims</button>
 
-          <button onClick={() => { console.log("LOL", value) }}>MALEK</button>
-
+          <PayPalScriptProvider options={initialOptions}>
+            <PaypalPayment/>
+          </PayPalScriptProvider>
 
           <Routes>
             <Route path="/" element={user ? <Home /> : <Navigate to="/login" replace />} />

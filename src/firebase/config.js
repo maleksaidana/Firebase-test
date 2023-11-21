@@ -3,6 +3,7 @@ import { getFirestore, Timestamp } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import "firebase/storage";
+import { getFunctions } from 'firebase/functions';
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -24,9 +25,13 @@ const firebaseConfig = {
   //init Storage
   const projectStorage = getStorage(app); 
 
+  //get Functons
+  const functions = getFunctions(app);
+
+
   //time Stamp
   const timestamp = Timestamp;
 
   const projectAuth = getAuth();
 
-  export { projectFirestore, projectAuth, projectStorage, timestamp };
+  export { projectFirestore, projectAuth, projectStorage, functions, timestamp };
