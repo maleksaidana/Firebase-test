@@ -53,9 +53,7 @@ function App() {
           <button onClick={adminRole}>Set Admin</button>
           <button onClick={getToken}>get Claims</button>
 
-          <PayPalScriptProvider options={initialOptions}>
             <PaypalPayment/>
-          </PayPalScriptProvider>
 
           <Routes>
             <Route path="/" element={user ? <Home /> : <Navigate to="/login" replace />} />
