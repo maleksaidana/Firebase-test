@@ -13,6 +13,7 @@ import { httpsCallable } from 'firebase/functions';
 import { functions } from "./firebase/config";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import PaypalPayment from "./PaypalPayment";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 
 function App() {
@@ -46,12 +47,21 @@ function App() {
   };
 
 
+  const sendresetpassword = () =>{
+    const auth = getAuth();
+    sendPasswordResetEmail(auth, user.email)
+    .then(() => {
+      // Password reset email sent!
+    })
+  }
+
   return (
     <>
       {authIsReady && (
         <><Header />
           <button onClick={adminRole}>Set Admin</button>
           <button onClick={getToken}>get Claims</button>
+          <button onClick={sendresetpassword}>send Reset Password</button>
 
             <PaypalPayment/>
 
