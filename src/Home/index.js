@@ -6,6 +6,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import {doc, deleteDoc } from "firebase/firestore";
 import './style.css';
 import { useCollection } from '../hooks/useCollection';
+import { addDoc, collection } from "firebase/firestore";
 
 function Home() {
 
@@ -114,6 +115,15 @@ function Home() {
         e.preventDefault();
         const doc = { title, ingredients, method, cookingTime };
         addDocument({...doc, uid: user.uid})
+        
+        const docRef = await addDoc(
+            collection(projectFirestore, "recipes", "fzZQ7ViaTphK4MoH70Kt", "project"),
+            {
+              description: "Malek description",
+              title: "Malek Title",
+            }
+          );
+      
     }
 
     useEffect(() => {

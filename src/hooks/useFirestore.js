@@ -23,13 +23,19 @@ const firestoreReducer = (state, action) => {
     }
 }
 
-export const useFirestore = (coll) => {
+export const useFirestore = (coll, subCollection = null, documentId = null) => {
     const [response, dispatch] = useReducer(firestoreReducer, initialState);
     const [isCanceled, setIsCanceled] = useState(false);
 
     //collection ref
 
-    const ref = collection(projectFirestore, coll);
+    let ref = null;
+    if (subCollection && documentId) {
+        ref = collection(projectFirestore, coll, subCollection, documentId)
+    }
+    else {
+        ref = collection(projectFirestore, coll);
+    }
 
     //only dipatch if not canceled
     const dispatchIfNotCanceled = (action) => {
@@ -44,8 +50,9 @@ export const useFirestore = (coll) => {
         try {
             const createdAt = timestamp.fromDate(new Date());
             const addedDocument = await addDoc(ref, { ...doc, createdAt });
-            console.log("ADDED DOCUMENT", addedDocument);
+            //console.log("ADDED DOCUMENT", addedDocument);
             dispatchIfNotCanceled({ type: "ADDED_DOCUMENT", payload: addedDocument })
+
         }
         catch (err) {
             dispatchIfNotCanceled({ type: "ERROR", payload: err.message })
@@ -55,10 +62,17 @@ export const useFirestore = (coll) => {
     }
 
     //set a document
-    const setDocument = async (id, fields, merge = false) => {
+    const setDocument = async (id, fields, merge = false, subDocumentId = null) => {
         dispatch({ type: 'IS_PENDING', document: null, success: false, error: null });
         try {
-            const refdoc = doc(projectFirestore, coll, id);
+            let refdoc = null;
+            if (subCollection && documentId) {
+                refdoc = doc(projectFirestore, coll, id, subCollection, subDocumentId);
+            }
+            else {
+                refdoc = doc(projectFirestore, coll, id);
+            }
+
             console.log("MALEK", fields)
             const doneDocuments = await setDoc(refdoc, fields, { merge });
 

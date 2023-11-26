@@ -11,8 +11,8 @@ function Item() {
 
 
     const { id } = useParams();
-    const { document, error } = useDocument("recipes", id);
-    const { setDocument, response } = useFirestore("recipes");
+    const { document, error } = useDocument("recipes", id, "project", id);
+    const { setDocument, response } = useFirestore("recipes", id, "project", "fzZQ7ViaTphK4MoH70Kt");
 
     const handleUpdate =async () => {
         setDocument(id, { title: 'new title ' + (Math.floor(Math.random() * 90000) + 10000), ingredients:  arrayUnion("greater_virnia") }, true);
@@ -28,7 +28,7 @@ function Item() {
             <p>Ingredients: </p>
             <ul className="ingredients">
                 {
-                    document?.ingredients.length > 0 && document.ingredients.map((item, i) => {
+                    document?.ingredients?.length > 0 && document.ingredients.map((item, i) => {
                         return <li key={i}> {item} </li>
                     })
                 }
